@@ -1,0 +1,120 @@
+CREATE TABLE Donors (
+    email VARCHAR(50) PRIMARY KEY, 
+    first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+    nationality VARCHAR(50) NOT NULL,
+	address varchar(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+	password VARCHAR(50) NOT NULL,
+	gender CHAR(1),
+	donations_made INT
+);
+
+CREATE TABLE Volunteers (
+	email VARCHAR(50) PRIMARY KEY, 
+    first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+    nationality VARCHAR(50) NOT NULL,
+	address varchar(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+	password VARCHAR(50) NOT NULL,
+	gender CHAR(1),
+	total_contributions INT
+);
+
+CREATE TABLE Member (
+	email VARCHAR(50) PRIMARY KEY, 
+    first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+    nationality VARCHAR(50) NOT NULL,
+	address varchar(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+	password VARCHAR(50) NOT NULL,
+	gender CHAR(1),
+	work_hours INT
+)
+
+
+CREATE PROCEDURE INSERT_DONOR
+@email varchar(50),
+@first_name varchar(50),
+@last_name varchar(50),
+@nationality varchar(50),
+@address varchar(100),
+@phone varchar(20),
+@password varchar(50),
+@gender char(1),
+@donations_made int
+as
+begin
+insert into Donors values(@email,@first_name,@last_name,@nationality,@address,@phone,@password,@gender,@donations_made)
+end 
+
+CREATE PROCEDURE INSERT_VOLUNTEER
+@email varchar(50),
+@first_name varchar(50),
+@last_name varchar(50),
+@nationality varchar(50),
+@address varchar(100),
+@phone varchar(20),
+@password varchar(50),
+@gender char(1),
+@total_contribution int
+as
+begin
+insert into Volunteers values(@email,@first_name,@last_name,@nationality,@address,@phone,@password,@gender,@total_contribution)
+end 
+
+
+
+CREATE PROCEDURE INSERT_MEMBER
+@email varchar(50),
+@first_name varchar(50),
+@last_name varchar(50),
+@nationality varchar(50),
+@address varchar(100),
+@phone varchar(20),
+@password varchar(50),
+@gender char(1),
+@work_hours int
+as
+begin
+insert into Member values(@email,@first_name,@last_name,@nationality,@address,@phone,@password,@gender,@work_hours)
+end 
+
+select * from Donors
+select * from Volunteers
+select * from Member
+
+
+CREATE TABLE Donations (
+    donor_email VARCHAR(50) NOT NULL,
+    amount INT NOT NULL,
+    category VARCHAR(10) NOT NULL,
+    PRIMARY KEY (category, donor_email),
+    FOREIGN KEY (donor_email) REFERENCES Donors(email)
+);
+
+CREATE PROCEDURE IncreaseDonation
+    @donationValue INT,
+	@email varchar(50),
+	@category varchar(10)
+AS
+BEGIN
+    UPDATE Donors SET donations_made = donations_made + @donationValue where email=@email
+	UPDATE Donations SET amount=amount + @donationValue where donor_email=@email and category=@category
+END
+
+
+CREATE PROCEDURE InsertDonation
+    @donorEmail VARCHAR(50),
+    @amount INT,
+    @category VARCHAR(10)
+AS
+BEGIN
+    INSERT INTO Donations(donor_email, amount, category)
+    VALUES (@donorEmail, @amount, @category)
+END
+
+select *from Donors
+select * from Donations
